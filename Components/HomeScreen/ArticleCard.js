@@ -5,18 +5,19 @@ let {width} = Dimensions.get('window')
 
 function ArticleCard(props) {
     let handlePress = () => {
-        props.navigation.navigate('Article', {link: props.articleData.link})
+        props.articleData.navigation.navigate('Article', {link: link})
     }
+
+    const {image, title, description, link} = props.articleData.item
 
     return (
         <TouchableOpacity style={styles.container} onPress={handlePress}>
             <View style={{overflow: 'hidden'}}>
-                <Image style={styles.thumbnail} source={props.articleData.image}/>
+                <Image style={styles.thumbnail} source={image}/>
             </View>
             <View style={styles.textContainer}>
-                <Text style={styles.title}>{props.articleData.title}</Text>
-                <Text style={styles.description}>{props.articleData.description}</Text>
-                <Text style={styles.continueReading}>Continue reading...</Text>
+                <Text style={styles.title} numberOfLines={3} ellipsizeMode='tail'>{title}</Text>
+                <Text style={styles.description} numberOfLines={2} ellipsizeMode='tail'>{description}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -24,11 +25,13 @@ function ArticleCard(props) {
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         marginTop: (width * 0.03),
         marginLeft: (width * 0.03),
         marginRight: (width * 0.03),
+        padding: (width * 0.02),
         borderRadius: 15,
+        backgroundColor: 'white',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -39,26 +42,22 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     thumbnail: {
-        width: width * 0.94,
-        height: width * 0.6,
-        borderTopRightRadius: 15,
-        borderTopLeftRadius: 15,
+        width: width * 0.26,
+        height: width * 0.26,
+        marginRight: (width * 0.02),
+        borderRadius: 15
     },
     textContainer: {
-        height: width * 0.6,
+        flex: 1,
         padding: 2,
-        backgroundColor: 'white',
-        borderBottomRightRadius: 15,
-        borderBottomLeftRadius: 15,
+        justifyContent: 'space-around',
     },
     title: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: 16
     },
     description: {
         marginTop: 2
-    },
-    continueReading: {
-        alignSelf: 'flex-end'
     }
 });
 

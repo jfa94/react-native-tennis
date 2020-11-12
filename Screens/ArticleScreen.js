@@ -11,6 +11,4 @@ function ArticleScreen(props) {
     );
 }
 
-const styles = StyleSheet.create({});
-
 export default ArticleScreen;

@@ -1,11 +1,10 @@
 import * as React from 'react';
-import {View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import HomeScreen from './screens/HomeScreen';
-import SettingsScreen from './screens/SettingsScreen';
+import HomeScreen from './Screens/HomeScreen';
+import SettingsScreen from './Screens/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,8 +17,8 @@ function App() {
                         let iconName;
 
                         switch (route.name) {
-                            case 'Home':
-                                iconName = 'ios-home';
+                            case 'News':
+                                iconName = 'ios-paper';
                                 break;
                             case 'Settings':
                                 iconName = 'ios-cog';
