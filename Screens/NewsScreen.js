@@ -1,6 +1,7 @@
 import React, {useContext, useEffect} from "react";
-import {View, ActivityIndicator, FlatList} from "react-native";
+import {StatusBar, ActivityIndicator, FlatList} from "react-native";
 import {createStackNavigator} from "@react-navigation/stack";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 import ArticleCard from "../Components/HomeScreen/ArticleCard";
 import ArticleScreen from "./ArticleScreen";
@@ -17,27 +18,27 @@ function NewsFeed(props) {
 
     return (
         isLoading ?
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <ActivityIndicator size={'small'} />
-            </View> :
-            <View style={{flex: 1}}>
+            <SafeAreaView style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+                <ActivityIndicator size="small" />
+            </SafeAreaView> :
+            <SafeAreaView style={{flex: 1}}>
                 <FlatList
                     data={articles}
                     renderItem={(item) => <ArticleCard articleData={{...item, navigation: props.navigation}} />}
                     keyExtractor={item => item.id}
                 />
-            </View>
+            </SafeAreaView>
     );
 }
 
 const Stack = createStackNavigator();
 
-export default function HomeScreen() {
+export default function NewsScreen() {
     return (
         <ArticleProvider>
             <Stack.Navigator>
-                <Stack.Screen name="News Feed" component={NewsFeed}/>
-                <Stack.Screen name="Article" component={ArticleScreen} options={{title: ''}}/>
+                <Stack.Screen name="News Feed" component={NewsFeed} options={{headerShown: false}}/>
+                <Stack.Screen name="Article" component={ArticleScreen} options={{title: "", headerBackTitle: "Back"}}/>
             </Stack.Navigator>
         </ArticleProvider>
     );

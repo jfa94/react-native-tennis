@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import HomeScreen from './Screens/HomeScreen';
+import NewsScreen from './Screens/NewsScreen';
 import SettingsScreen from './Screens/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
@@ -29,7 +29,7 @@ function App() {
                     },
                 })}
             >
-                <Tab.Screen name='Home' component={HomeScreen}/>
+                <Tab.Screen name='News' component={NewsScreen} />
                 <Tab.Screen name='Settings' component={SettingsScreen}/>
             </Tab.Navigator>
         </NavigationContainer>

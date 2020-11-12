@@ -8,7 +8,7 @@ function ArticleCard(props) {
         props.articleData.navigation.navigate('Article', {link: link})
     }
 
-    const {image, title, description, link} = props.articleData.item
+    const {image, title, newspaper, description, link} = props.articleData.item
 
     return (
         <TouchableOpacity style={styles.container} onPress={handlePress}>
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         marginLeft: (width * 0.03),
         marginRight: (width * 0.03),
         padding: (width * 0.02),
-        borderRadius: 15,
+        borderRadius: 7,
         backgroundColor: 'white',
         shadowColor: "#000",
         shadowOffset: {
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         width: width * 0.26,
         height: width * 0.26,
         marginRight: (width * 0.02),
-        borderRadius: 15
+        borderRadius: 4
     },
     textContainer: {
         flex: 1,
