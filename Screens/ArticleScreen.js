@@ -1,8 +1,10 @@
-import React from 'react';
-import {StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {StatusBar} from 'react-native';
 import WebView from 'react-native-webview';
 
 function ArticleScreen(props) {
+    useEffect(() => StatusBar.setBarStyle( 'dark-content' ), [])
+
     return (
         <WebView
             source={props.route.params.link}

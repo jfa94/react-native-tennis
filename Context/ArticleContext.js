@@ -14,7 +14,7 @@ function ArticleProvider(props) {
         setTimeout(() => {
             setArticles(articleList.default)
             setIsLoading(false)
-        }, 5000)
+        }, 1500)
     }
 
     return (

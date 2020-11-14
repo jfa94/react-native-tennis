@@ -15,16 +15,16 @@ export default [
     title: "Check out this news article",
     description: "There is an update that you should probably have a look at",
     image: {uri: "https://cdn.images.express.co.uk/img/dynamic/72/590x/1357460_1.jpg"},
-    link: {uri: "https://www.bbc.co.uk/sport/tennis/54866029"}
+    link: {uri: "https://www.atptour.com/en/news/nadal-nitto-atp-finals-2020-preview"}
 
   },
   {
     id: 'c345',
     date: '2020-10-01',
-    newspaper: 'Racquet Magazine',
+    newspaper: 'An important Racquet Magazine',
     title: "You'll never believe what this person just said",
     description: "It was honestly bananas, you should totally read the hot take we wrote",
     image: {uri: "https://static01.nyt.com/images/2020/08/28/sports/28tennis-players01/28tennis-players01-videoSixteenByNineJumbo1600.jpg"},
-    link: {uri: "https://www.bbc.co.uk/sport/tennis/54866029"}
+    link: {uri: "https://www.skysports.com/tennis/news/33504/12122867/atp-finals-we-look-back-at-previous-finals-played-at-the-o2-in-london"}
   }
 ]

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {StatusBar} from "react-native";
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -29,7 +30,7 @@ function App() {
                     },
                 })}
             >
-                <Tab.Screen name='News' component={NewsScreen} />
+                <Tab.Screen name='News' component={NewsScreen}/>
                 <Tab.Screen name='Settings' component={SettingsScreen}/>
             </Tab.Navigator>
         </NavigationContainer>
