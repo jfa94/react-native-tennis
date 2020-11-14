@@ -14,7 +14,7 @@ function NewsFeed(props) {
     const {articles, isLoading, refreshArticles} = useContext(ArticleContext)
 
     const FlatListHeader = (
-        <Text style={{marginLeft: (width * 0.04), fontWeight: 'bold', fontSize: 32}}>
+        <Text style={{marginLeft: (width * 0.04), marginTop: (width * 0.02), fontWeight: 'bold', fontSize: 34}}>
             News Feed
         </Text>
     )
@@ -32,7 +32,7 @@ function NewsFeed(props) {
     return (
         isLoading ?
             <SafeAreaView style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                <ActivityIndicator size="small" />
+                <ActivityIndicator size="large" />
             </SafeAreaView> :
             <SafeAreaView style={{flex: 1}}>
                 <FlatList

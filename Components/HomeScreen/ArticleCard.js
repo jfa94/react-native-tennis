@@ -3,12 +3,12 @@ import {View, Text, StyleSheet, Image, Dimensions, TouchableOpacity} from 'react
 
 let {width} = Dimensions.get('window')
 
-const TITLE_FONT_SIZE = 16;
+const TITLE_FONT_SIZE = 17;
+const DESCRIPTION_FONT_SIZE = 15;
 
 function ArticleCard(props) {
     let [usedTitleLines, setUsedTitleLines] = useState(0);
 
-    // TODO: Finish function - figure out why division is not working
     const onLayout = useCallback((e) => {
         console.log(e.nativeEvent)
         setUsedTitleLines(Math.floor(e.nativeEvent.layout.height / TITLE_FONT_SIZE))
@@ -29,8 +29,14 @@ function ArticleCard(props) {
             <View style={styles.textContainer}>
                 <View style={styles.titleAndDescContainer}>
                     <Text style={styles.title} numberOfLines={3} ellipsizeMode='tail' onLayout={onLayout}>{title}</Text>
-                    <Text style={styles.description} numberOfLines={3 - usedTitleLines}
-                          ellipsizeMode='tail'>{description}</Text>
+                    {usedTitleLines === 3 ? null :
+                        <Text
+                            style={styles.description}
+                            numberOfLines={3 - usedTitleLines}
+                            ellipsizeMode='tail'>
+                            {description}
+                        </Text>
+                    }
                 </View>
                 <View style={styles.footerContainer}>
                     <Text numberOfLines={1} style={{flexShrink: 1, color: 'grey'}}>{newspaper}</Text>
@@ -78,7 +84,9 @@ const styles = StyleSheet.create({
         marginBottom: 3
     },
     description: {
-        flexShrink: 1
+        flexShrink: 1,
+        fontSize: DESCRIPTION_FONT_SIZE,
+        lineHeight: DESCRIPTION_FONT_SIZE + 5
     },
     footerContainer: {
         flexDirection: 'row',

@@ -13,7 +13,7 @@ export default [
     date: '2020-11-01',
     newspaper: 'The Telegraph',
     title: "Check out this news article",
-    description: "There is an update that you should probably have a look at",
+    description: "There is an update that you should probably have a look at. We promise it's very interesting.",
     image: {uri: "https://cdn.images.express.co.uk/img/dynamic/72/590x/1357460_1.jpg"},
     link: {uri: "https://www.atptour.com/en/news/nadal-nitto-atp-finals-2020-preview"}
 
