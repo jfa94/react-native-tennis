@@ -1,15 +1,20 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import {StatusBar} from "react-native";
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import NewsScreen from './Screens/NewsScreen';
-import SettingsScreen from './Screens/SettingsScreen';
+import NewsScreen from './screens/NewsScreen';
+import RankingsScreen from './screens/RankingsScreen';
+import FixturesScreen from "./screens/FixturesScreen";
+import TournamentsScreen from "./screens/TournamentsScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
 function App() {
+    useEffect(() => StatusBar.setBarStyle( 'dark-content' ), [])
+
     return (
         <NavigationContainer>
             <Tab.Navigator
@@ -21,8 +26,17 @@ function App() {
                             case 'News':
                                 iconName = 'ios-paper';
                                 break;
-                            case 'Settings':
-                                iconName = 'ios-cog';
+                            case 'Matches':
+                                iconName = 'ios-tennisball'
+                                break;
+                            case 'Tournaments':
+                                iconName = 'ios-calendar';
+                                break;
+                            case 'Rankings':
+                                iconName = 'ios-trophy';
+                                break;
+                            case 'Profile':
+                                iconName = 'ios-happy';
                                 break;
                         }
 
@@ -31,7 +45,10 @@ function App() {
                 })}
             >
                 <Tab.Screen name='News' component={NewsScreen}/>
-                <Tab.Screen name='Settings' component={SettingsScreen}/>
+                <Tab.Screen name='Matches' component={FixturesScreen}/>
+                <Tab.Screen name='Tournaments' component={TournamentsScreen}/>
+                <Tab.Screen name='Rankings' component={RankingsScreen}/>
+                <Tab.Screen name='Profile' component={ProfileScreen}/>
             </Tab.Navigator>
         </NavigationContainer>
     );

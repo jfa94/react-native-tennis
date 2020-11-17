@@ -1,6 +1,6 @@
 import React, {useState, createContext} from 'react';
 
-import * as articleList from './DummyData/ARTICLES.js'
+import * as articleList from '../shared/dummyData/ARTICLES.js'
 
 const ArticleContext = createContext(null)
 
