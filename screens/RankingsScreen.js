@@ -1,20 +1,17 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React from "react";
+import {createStackNavigator} from "@react-navigation/stack";
 
-function RankingsScreen(props) {
+import {PlayersProvider} from "../context/PlayersContext";
+import RankingsLanding from "../components/RankingsScreen/RankingsLanding";
+
+export default function NewsScreen() {
     return (
-        <View style={styles.container}>
-            <Text>Players go here</Text>
-        </View>
+        <PlayersProvider>
+            <Stack.Navigator>
+                <Stack.Screen name="Landing" component={RankingsLanding} options={{headerShown: false}}/>
+            </Stack.Navigator>
+        </PlayersProvider>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
-});
-
-export default RankingsScreen;
+const Stack = createStackNavigator();

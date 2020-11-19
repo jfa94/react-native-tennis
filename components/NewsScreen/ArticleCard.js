@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, Dimensions, TouchableOpacity} from 'react-native';
 
-import {TITLE_FONT_SIZE} from "../../shared/constants";
+import {TITLE_FONT_SIZE, SHADOW_STYLING} from "../../shared/constants";
 
 let {width} = Dimensions.get('window')
 
@@ -53,21 +53,14 @@ const styles = StyleSheet.create({
         padding: (width * 0.02),
         borderRadius: 7,
         backgroundColor: 'white',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 3.84,
-        elevation: 2
+        ...SHADOW_STYLING
     },
     thumbnail: {
-        width: width * 0.26,
-        height: width * 0.26,
+        width: (width * 0.26),
+        height: (width * 0.26),
         marginRight: (width * 0.02),
         borderRadius: 4,
-        backgroundColor: '#f5f5f5'
+        backgroundColor: '#f5f5f5',
     },
     textContainer: {
         flex: 1,
@@ -76,7 +69,7 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: 'bold',
         fontSize: TITLE_FONT_SIZE,
-        lineHeight: TITLE_FONT_SIZE * 1.3,
+        lineHeight: (TITLE_FONT_SIZE * 1.3),
         flex: 1
     },
     footerContainer: {
