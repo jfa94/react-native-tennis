@@ -1,26 +1,35 @@
 import React from 'react';
-import {Text, View, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet, Dimensions, ActivityIndicator} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import {SHADOW_STYLING} from '../../shared/constants.js'
 
 const {width} = Dimensions.get('window')
 
-function RankingsPreview(props) {
+function RankingsPreview({title, players}) {
     let groupTitle
-    switch(props.title) {
-        case 'ATP_SINGLES': groupTitle = 'ATP Singles'; break;
-        case 'WTA_SINGLES': groupTitle = 'WTA Singles'; break;
-        case 'ATP_DOUBLES': groupTitle = 'ATP Doubles'; break;
-        case 'WTA_DOUBLES': groupTitle = 'WTA Doubles'; break;
+    switch (title) {
+        case 'ATP_SINGLES':
+            groupTitle = 'ATP Singles';
+            break;
+        case 'WTA_SINGLES':
+            groupTitle = 'WTA Singles';
+            break;
+        case 'ATP_DOUBLES':
+            groupTitle = 'ATP Doubles';
+            break;
+        case 'WTA_DOUBLES':
+            groupTitle = 'WTA Doubles';
+            break;
     }
 
     const PlayerRow = (props) => {
-        const {playerName, rankingPoints, nationality} = props
+        const {playerName, rankingPoints, nationality, officialRanking} = props
         return (
             <View style={styles.playerRow}>
                 <View style={styles.playerRowLeft}>
-                    <Text>{nationality}</Text>
+                    <Text style={{width: (width * .07)}}>{`${officialRanking}. `}</Text>
+                    <Text style={{width: (width * .12)}}>{nationality}</Text>
                     <Text>{playerName}</Text>
                 </View>
                 <View style={styles.playerRowRight}>
@@ -32,9 +41,10 @@ function RankingsPreview(props) {
     return (
         <TouchableOpacity style={styles.navButton} onPress={() => alert(`Navigate to ${groupTitle}`)}>
             <Text style={styles.groupTitle}>{groupTitle}</Text>
-            {props.players.map(player => {
-                return <PlayerRow key={player.playerId} {...player} />
-            })}
+            {players ?
+                players.map(player => {
+                    return <PlayerRow key={player.playerId} {...player} />
+                }) : <ActivityIndicator size="small"/>}
             <Text style={{alignSelf: 'flex-end', color: 'grey'}}>
                 {'Full rankings  '}
                 <Ionicons name='md-arrow-forward' color='grey'/>
@@ -60,9 +70,7 @@ const styles = StyleSheet.create({
     playerRowLeft: {
         flexDirection: 'row'
     },
-    playerRowRight: {
-
-    },
+    playerRowRight: {},
     groupTitle: {
         fontWeight: 'bold'
     }
