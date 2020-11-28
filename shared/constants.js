@@ -1,7 +1,7 @@
 export const SUPPORTED_RANKINGS = ['ATP_SINGLES', 'WTA_SINGLES']
 export const HEADING_FONT_SIZE = 34
-export const TITLE_FONT_SIZE = 17
-export const TEXT_FONT_SIZE = 14
+export const TITLE_FONT_SIZE = 19
+export const TEXT_FONT_SIZE = 16
 export const SHADOW_STYLING = {
     shadowColor: "#000",
     shadowOffset: {

@@ -1,24 +1,10 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, Dimensions, TouchableOpacity} from 'react-native';
 
+import {getStringDiff} from "../../shared/functions";
 import {TITLE_FONT_SIZE, SHADOW_STYLING} from "../../shared/constants";
 
 let {width} = Dimensions.get('window')
-
-function getTimeDiff (dateString) {
-    const dateObject = new Date(dateString)
-    const diffTime = Math.abs(new Date() - dateObject);
-    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
-
-    if (isNaN(dateObject.getDate())) {
-        return null
-    }
-    else if (diffHours < 24) {
-        return `${diffHours} hours ago`
-    } else {
-        return `${Math.ceil(diffHours / 24)} days ago`
-    }
-}
 
 function ArticleCard(props) {
     let handlePress = () => {
@@ -26,7 +12,7 @@ function ArticleCard(props) {
     }
 
     const {image, title, newspaper, date, link} = props.articleData.item
-    const timeDifference = getTimeDiff(date)
+    const timeDifference = getStringDiff(date)
 
     return (
         <TouchableOpacity style={styles.container} onPress={handlePress}>

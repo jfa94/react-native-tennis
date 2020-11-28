@@ -1,29 +1,80 @@
-import React, {useContext} from 'react';
-import {Text, View, ScrollView, SafeAreaView, StyleSheet, Dimensions} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {
+    Text,
+    View,
+    ScrollView,
+    SafeAreaView,
+    StyleSheet,
+    Dimensions,
+    RefreshControl,
+    TouchableOpacity
+} from 'react-native';
 import {createStackNavigator} from "@react-navigation/stack";
 
+import FullRankingsScreen from "./rankings/FullRankingsScreen";
 import RankingsPreview from "../components/RankingsScreen/RankingsPreview";
+import ScreenLoadingIndicator from "../shared/components/ScreenLoadingIndicator";
 
-import {PlayersProvider, PlayersApi} from "../api/playersApi";
+import {readRankings, refreshRankings} from "../api/playersApi";
+import {getHoursDiff} from "../shared/functions.js";
 import {HEADING_FONT_SIZE, SUPPORTED_RANKINGS} from '../shared/constants.js'
 
 const {width} = Dimensions.get('window')
 
-function RankingsLanding() {
-    const {playerCategories} = useContext(PlayersApi)
-    console.log(playerCategories)
+function RankingsLanding({navigation}) {
+    let [latestRankings, setLatestRankings] = useState(null)
+    let [refreshing, setRefreshing] = useState(false)
+    const refreshThreshold = (24 * 31)
+
+    const Header = <Text style={styles.heading}>Rankings</Text>
+
+    const doRankingsRefresh = useCallback(async () => {
+        setRefreshing(true)
+        let localRankings = await readRankings()
+
+        if (latestRankings == null || getHoursDiff(latestRankings?.metaData?.validFrom) > refreshThreshold) {
+            await refreshRankings()
+            localRankings = await readRankings()
+            setLatestRankings(localRankings)
+            console.warn('Rankings refreshed from API')
+            setRefreshing(false)
+        } else if (getHoursDiff(latestRankings?.metaData?.validFrom) <= refreshThreshold) {
+            setLatestRankings(localRankings)
+            setRefreshing(false)
+        } else {
+            console.warn(`Time difference: ${getHoursDiff(latestRankings.metaData.validFrom)}`)
+        }
+    }, [])
+
+    useEffect(() => {
+        doRankingsRefresh()
+    }, [doRankingsRefresh])
 
     return (
-        <SafeAreaView style={{flex: 1}}>
-            <ScrollView>
-                <Text style={styles.heading}>Rankings</Text>
-                <View style={styles.buttonContainer}>
-                    {SUPPORTED_RANKINGS.map((category) => {
-                        return <RankingsPreview key={category} title={category} players={playerCategories[category]} />
-                    })}
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+        latestRankings == null ?
+            <ScreenLoadingIndicator>
+                {Header}
+            </ScreenLoadingIndicator> :
+            <SafeAreaView style={{flex: 1}}>
+                <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={doRankingsRefresh}/>}>
+                    {Header}
+                    <View style={styles.buttonContainer}>
+                        {SUPPORTED_RANKINGS.map((category) => {
+                            return (
+                                <TouchableOpacity key={category} onPress={() => navigation.navigate("Rankings", {
+                                    category: category
+                                })}>
+                                    <RankingsPreview
+                                        title={category}
+                                        players={latestRankings[category].slice(0, 5)}
+                                        navigation={navigation}
+                                    />
+                                </TouchableOpacity>
+                            )
+                        })}
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
     );
 }
 
@@ -31,11 +82,10 @@ const Stack = createStackNavigator();
 
 export default function NewsScreen() {
     return (
-        <PlayersProvider>
-            <Stack.Navigator>
-                <Stack.Screen name="Landing" component={RankingsLanding} options={{headerShown: false}}/>
-            </Stack.Navigator>
-        </PlayersProvider>
+        <Stack.Navigator>
+            <Stack.Screen name="Landing" component={RankingsLanding} options={{headerShown: false}}/>
+            <Stack.Screen name="Rankings" component={FullRankingsScreen} options={{headerBackTitle: "Back"}}/>
+        </Stack.Navigator>
     );
 }
 
@@ -48,5 +98,9 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flex: 1,
+    },
+    activityIndicator: {
+        flex: 1,
+        alignSelf: 'center'
     }
 });

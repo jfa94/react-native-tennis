@@ -1,39 +1,47 @@
-import React, {useState, createContext} from 'react';
+import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// TODO: Replace with API call
-import {RANKINGS} from '../shared/dummyData/PLAYERS'
 import {SUPPORTED_RANKINGS} from "../shared/constants";
 
 async function callRankingsApi() {
     try {
-        let response = await fetch('https://run.mocky.io/v3/b8d190a4-ea99-4ba7-a77d-08ca702f7324')
-        return await response.json();
+        // TODO: Update to custom API
+        let response = await fetch('https://run.mocky.io/v3/e37318ac-f7d7-428e-b07b-981be8418b93')
+        let jsonResponse = await response.json()
+        SUPPORTED_RANKINGS.forEach((category) => {
+            jsonResponse[category] = jsonResponse[category].sort(
+                (a, b) => parseFloat(a.officialRanking) - parseFloat(b.officialRanking)
+            )
+        })
+        return jsonResponse
     } catch (error) {
-        console.log(`error while fetching rankings in 'playersApi.js': ${error}`)
+        console.warn(`error while fetching rankings in 'playersApi.js': ${error}`)
     }
 }
 
-async function storeRankings() {
-    // TODO: Finish storing and reading from storage
+async function storeRankings(rankingsData) {
     try {
-        await AsyncStorage.setItem()
+        await AsyncStorage.setItem('latestRankings', JSON.stringify(rankingsData))
     } catch (error) {
-        console.log(`error while storing rankings in 'playersApi.js': ${error}`)
+        console.warn(`error while storing rankings in 'playersApi.js': ${error}`)
     }
 }
 
-
-const PlayersApi = createContext(null)
-
-function PlayersProvider(props) {
-    const [playerCategories, setPlayerCategories] = useState(RANKINGS)
-
-    return (
-        <PlayersApi.Provider value={{playerCategories}}>
-            {props.children}
-        </PlayersApi.Provider>
-    );
+async function readRankings() {
+    try {
+        const jsonValue = await AsyncStorage.getItem('latestRankings')
+        return jsonValue !== null ? JSON.parse(jsonValue) : null;
+    } catch (error) {
+        console.warn(`error while getting rankings in 'playersApi.js': ${error}`)
+    }
 }
 
-export {PlayersProvider, PlayersApi};
+async function refreshRankings() {
+    const apiResults = await callRankingsApi()
+
+    if (apiResults) {
+        await storeRankings(apiResults)
+    }
+}
+
+export {readRankings, refreshRankings}

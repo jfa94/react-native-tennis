@@ -1,8 +1,8 @@
 import React from 'react';
-import {Text, View, TouchableOpacity, StyleSheet, Dimensions, ActivityIndicator} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, ActivityIndicator, Image} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import {SHADOW_STYLING} from '../../shared/constants.js'
+import {SHADOW_STYLING, TEXT_FONT_SIZE, TITLE_FONT_SIZE} from '../../shared/constants.js'
 
 const {width} = Dimensions.get('window')
 
@@ -28,28 +28,33 @@ function RankingsPreview({title, players}) {
         return (
             <View style={styles.playerRow}>
                 <View style={styles.playerRowLeft}>
-                    <Text style={{width: (width * .07)}}>{`${officialRanking}. `}</Text>
-                    <Text style={{width: (width * .12)}}>{nationality}</Text>
-                    <Text>{playerName}</Text>
+                    <Text style={{width: (width * .04), ...styles.text}}>{`${officialRanking}.`}</Text>
+                    <View style={styles.flagContainer}>
+                        <Image
+                            style={nationality === 'CH' ? {...styles.flag, backgroundColor: '#FF0000'} : styles.flag}
+                            source={{uri: `https://www.countryflags.io/${nationality}/flat/64.png`}}
+                        />
+                    </View>
+                    <Text style={styles.text}>{playerName}</Text>
                 </View>
                 <View style={styles.playerRowRight}>
-                    <Text>{rankingPoints}</Text>
+                    <Text style={styles.text}>{rankingPoints}</Text>
                 </View>
             </View>)
     }
 
     return (
-        <TouchableOpacity style={styles.navButton} onPress={() => alert(`Navigate to ${groupTitle}`)}>
+        <View style={styles.navButton}>
             <Text style={styles.groupTitle}>{groupTitle}</Text>
-            {players ?
+            {!players ? <ActivityIndicator size="small"/> :
                 players.map(player => {
                     return <PlayerRow key={player.playerId} {...player} />
-                }) : <ActivityIndicator size="small"/>}
-            <Text style={{alignSelf: 'flex-end', color: 'grey'}}>
+                })}
+            <Text style={styles.fullRankingsLabel}>
                 {'Full rankings  '}
                 <Ionicons name='md-arrow-forward' color='grey'/>
             </Text>
-        </TouchableOpacity>
+        </View>
     )
 }
 
@@ -72,7 +77,31 @@ const styles = StyleSheet.create({
     },
     playerRowRight: {},
     groupTitle: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: TITLE_FONT_SIZE,
+        marginBottom: 5
+    },
+    text: {
+        fontSize: TEXT_FONT_SIZE,
+        lineHeight: TEXT_FONT_SIZE * 1.3
+    },
+    flag: {
+        height: TEXT_FONT_SIZE,
+        width: TEXT_FONT_SIZE * 1.5,
+        resizeMode: 'cover',
+        borderColor: '#e0e0e0',
+        borderWidth: .75,
+        borderRadius: 3
+    },
+    flagContainer: {
+        width: (width * .12),
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    fullRankingsLabel: {
+        alignSelf: 'flex-end',
+        color: 'grey',
+        marginTop: 5
     }
 });
 

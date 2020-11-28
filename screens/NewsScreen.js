@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Text, ActivityIndicator, FlatList, Dimensions, StyleSheet} from "react-native";
+import {Text, FlatList, Dimensions, StyleSheet, StatusBar, RefreshControl} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {createStackNavigator} from "@react-navigation/stack";
 
 import ArticleScreen from "./news/ArticleScreen";
 import ArticleCard from "../components/NewsScreen/ArticleCard";
+import ScreenLoadingIndicator from "../shared/components/ScreenLoadingIndicator";
 
 import {HEADING_FONT_SIZE} from "../shared/constants";
 
@@ -16,34 +17,41 @@ let {width} = Dimensions.get('window')
 function NewsFeed(props) {
     const [articles, setArticles] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false)
 
-    const refreshArticles = () => {
+    const Header = <Text style={styles.header}>News Feed</Text>
+
+    const refreshArticles = async () => {
+        setRefreshing(true)
         // TODO: Replace with API call
-        setTimeout(() => {
+        await setTimeout(() => {
             setArticles(articleList.default)
             setIsLoading(false)
+            setRefreshing(false)
         }, 1500)
     }
 
     useEffect(() => {
+        StatusBar.setBarStyle( 'dark-content' )
         setIsLoading(true)
         refreshArticles()
     }, [])
 
     return (
         isLoading ?
-            <SafeAreaView style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                <ActivityIndicator size="small"/>
-            </SafeAreaView> :
+            <ScreenLoadingIndicator>
+                {Header}
+            </ScreenLoadingIndicator> :
             <SafeAreaView style={{flex: 1}}>
                 <FlatList
-                    ListHeaderComponent={<Text style={styles.header}>News Feed</Text>}
+                    ListHeaderComponent={Header}
                     ListFooterComponent={<Text style={styles.footer}>You're all caught up!</Text>}
                     data={articles}
                     renderItem={(item) =>
                         <ArticleCard articleData={{...item, navigation: props.navigation}}/>
                     }
                     keyExtractor={item => item.id}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refreshArticles} />}
                 />
             </SafeAreaView>
     );
