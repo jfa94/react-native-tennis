@@ -1,47 +1,54 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Image, FlatList, Dimensions} from 'react-native';
+import {View, StyleSheet, FlatList, TouchableOpacity, Text} from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import ScreenLoadingIndicator from "../../shared/components/ScreenLoadingIndicator";
+import PlayerRow from "../../components/RankingsScreen/FullRankingsScreen/PlayerRow";
 
 import {readRankings} from "../../api/playersApi";
-import {getHoursDiff} from "../../shared/functions";
-import {TEXT_FONT_SIZE} from "../../shared/constants";
 
-const {width} = Dimensions.get('window')
-
-function FullRankingsScreen({route}) {
+function FullRankingsScreen({navigation, route}) {
     let [latestRankings, setLatestRankings] = useState(null)
     let [refreshing, setRefreshing] = useState(true)
+    let [orderBy, setOrderBy] = useState('OFFICIAL')
 
-    const PlayerRow = (props) => {
-        const {index, playerName, rankingPoints, nationality, officialRanking, dateOfBirth} = props
-        const displayRank = officialRanking > 999 ? '999+' : officialRanking
-        const colours = ['#f5f5f5', 'white']
+    const category = route.params.category
 
-        const ageHours = getHoursDiff(dateOfBirth)
-        const ageYears = Math.floor(ageHours/8760)
+    let pageTitle
+    switch (category) {
+        case 'ATP_SINGLES':
+            pageTitle = 'ATP Singles';
+            break;
+        case 'WTA_SINGLES':
+            pageTitle = 'WTA Singles';
+            break;
+        case 'ATP_DOUBLES':
+            pageTitle = 'ATP Doubles';
+            break;
+        case 'WTA_DOUBLES':
+            pageTitle = 'WTA Doubles';
+            break;
+    }
 
+    const headerRightButton = () => {
         return (
-            <View style={{backgroundColor: colours[index % 2], ...styles.playerRow}}>
-                <View style={styles.playerRowLeft}>
-                    <Text style={{...styles.displayRank, ...styles.text}}>{`${displayRank}`}</Text>
-                    <View style={styles.flagContainer}>
-                        <Image
-                            style={nationality === 'CH' ? {...styles.flag, backgroundColor: '#FF0000'} : styles.flag}
-                            source={{uri: `https://www.countryflags.io/${nationality}/flat/64.png`}}
-                        />
-                    </View>
-                    <Text style={{flex: 1, ...styles.text}} numberOfLines={2} ellipsizeMode='tail'>{playerName}</Text>
-                </View>
-                <View style={styles.playerRowRight}>
-                    <Text style={{width: (width * .08), textAlign: 'right', ...styles.text}}>{ageYears}</Text>
-                    <Text style={{width: (width * .16), textAlign: 'right', ...styles.text}}>{rankingPoints}</Text>
-                </View>
-            </View>)
+            <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
+                <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row', borderWidth: 2, borderRadius: 5, padding: 3}}>
+                    <Text style={{fontSize: 11, lineHeight: 15, fontWeight: 'bold'}}>{orderBy}</Text><Ionicons name={'md-arrow-dropdown'} />
+                </TouchableOpacity>
+                <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center', width: 38}}>
+                    <Ionicons name={'md-search'} size={28}/>
+                </TouchableOpacity>
+            </View>
+        )
     }
 
     useEffect(() => {
         (async () => {
+            await navigation.setOptions({
+                title: pageTitle,
+                headerRight: headerRightButton
+            })
             let localRankings = await readRankings()
             setLatestRankings(localRankings)
             setRefreshing(false)
@@ -53,7 +60,7 @@ function FullRankingsScreen({route}) {
             <ScreenLoadingIndicator /> :
             <View style={styles.rankingsContainer}>
                 <FlatList
-                    data={latestRankings[route.params.category]}
+                    data={latestRankings[category]}
                     keyExtractor={(player) => player.playerId}
                     renderItem={({index, item}) => {
                         return <PlayerRow index={index} {...item} />
@@ -66,44 +73,6 @@ function FullRankingsScreen({route}) {
 const styles = StyleSheet.create({
     rankingsContainer: {
         flex: 1
-    },
-    playerRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: TEXT_FONT_SIZE * 2.8
-    },
-    playerRowLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        flex: 1,
-        marginLeft: 7
-    },
-    playerRowRight: {
-        flexDirection: 'row',
-        marginRight: 7
-    },
-    text: {
-        fontSize: TEXT_FONT_SIZE,
-        lineHeight: TEXT_FONT_SIZE * 1.3
-    },
-    displayRank: {
-        width: (width * .11),
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    flag: {
-        height: TEXT_FONT_SIZE,
-        width: TEXT_FONT_SIZE * 1.5,
-        resizeMode: 'cover',
-        borderColor: '#e0e0e0',
-        borderWidth: .75,
-        borderRadius: 3
-    },
-    flagContainer: {
-        width: (width * .12),
-        justifyContent: 'center',
-        alignItems: 'center'
     }
 });
 
