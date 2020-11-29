@@ -28,7 +28,7 @@ function RankingsPreview({title, players}) {
         return (
             <View style={styles.playerRow}>
                 <View style={styles.playerRowLeft}>
-                    <Text style={{width: (width * .04), ...styles.text}}>{`${officialRanking}.`}</Text>
+                    <Text style={{width: (width * .04), fontWeight: 'bold', ...styles.text}}>{`${officialRanking}`}</Text>
                     <View style={styles.flagContainer}>
                         <Image
                             style={nationality === 'CH' ? {...styles.flag, backgroundColor: '#FF0000'} : styles.flag}
