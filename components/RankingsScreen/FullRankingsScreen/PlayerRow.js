@@ -1,6 +1,8 @@
-import React, {useState} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View, Dimensions} from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
+
+import {FavouritesContext} from "../../../context/FavouritesContext";
 
 import {getHoursDiff} from "../../../shared/functions";
 import {TEXT_FONT_SIZE} from "../../../shared/constants";
@@ -8,17 +10,46 @@ import {TEXT_FONT_SIZE} from "../../../shared/constants";
 const {width} = Dimensions.get('window')
 
 export default function PlayerRow (props) {
-    // TODO: Make favourites persist
+    const {favourites, favouritesReducer} = useContext(FavouritesContext)
     const [favourite, setFavourite] = useState(false)
 
-    const {index, playerName, rankingPoints, nationality, officialRanking, dateOfBirth} = props
-    const displayRank = officialRanking > 999 ? '999+' : officialRanking
-    const colours = ['#f5f5f5', 'white']
+    const {
+        index,
+        playerId,
+        playerName,
+        dateOfBirth,
+        rankingPoints,
+        ytdRankingPoints,
+        nationality,
+        officialRanking,
+        raceRanking,
+        orderKey,
+        navigation
+    } = props
+
+    const usedRanking = orderKey === 'raceRanking' ? raceRanking : officialRanking
+    const displayRank = usedRanking > 999 ? '999+' : usedRanking
+    const displayedPoints = orderKey === 'raceRanking' ? ytdRankingPoints : rankingPoints
 
     const ageYears = Math.floor(getHoursDiff(dateOfBirth)/8760)
 
+    const colours = ['#f5f5f5', 'white']
+
+    useEffect(() => {
+        favourites.includes(playerId) ? setFavourite(true) : setFavourite(false)
+    }, [])
+
+    const handlePlayerRowPress = () => {
+        navigation.navigate('Player', {playerId: playerId})
+    }
+
+    const handleFavouritePress = () => {
+        favourite ? favouritesReducer('REMOVE', playerId) : favouritesReducer('ADD', playerId)
+        setFavourite(prevState => !prevState)
+    }
+
     return (
-        <View style={{backgroundColor: colours[index % 2], ...styles.playerRow}}>
+        <TouchableOpacity style={{backgroundColor: colours[index % 2], ...styles.playerRow}} onPress={handlePlayerRowPress}>
             <View style={styles.playerRowLeft}>
                 <Text style={{...styles.displayRank, ...styles.text}}>{`${displayRank}`}</Text>
                 <View style={styles.flagContainer}>
@@ -31,14 +62,14 @@ export default function PlayerRow (props) {
             </View>
             <View style={styles.playerRowRight}>
                 <Text style={{width: (width * .07), textAlign: 'right', ...styles.text}}>{ageYears}</Text>
-                <Text style={{width: (width * .15), textAlign: 'right', ...styles.text}}>{rankingPoints}</Text>
-                <TouchableOpacity style={styles.addButton} onPress={() => setFavourite(prevState => !prevState)}>
+                <Text style={{width: (width * .15), textAlign: 'right', ...styles.text}}>{displayedPoints}</Text>
+                <TouchableOpacity style={styles.addButton} onPress={handleFavouritePress}>
                     {favourite ?
                         <Ionicons name="md-heart-empty" size={TEXT_FONT_SIZE * 1.3} /> :
                         <Ionicons name="md-add" size={TEXT_FONT_SIZE * 1.3} />}
                 </TouchableOpacity>
             </View>
-        </View>)
+        </TouchableOpacity>)
 }
 
 const styles = StyleSheet.create({

@@ -18,6 +18,7 @@ import ScreenLoadingIndicator from "../shared/components/ScreenLoadingIndicator"
 import {readRankings, refreshRankings} from "../api/playersApi";
 import {getHoursDiff} from "../shared/functions.js";
 import {HEADING_FONT_SIZE, SUPPORTED_RANKINGS} from '../shared/constants.js'
+import PlayerScreen from "./rankings/PlayerScreen";
 
 const {width} = Dimensions.get('window')
 
@@ -36,7 +37,6 @@ function RankingsLanding({navigation}) {
             await refreshRankings()
             localRankings = await readRankings()
             setLatestRankings(localRankings)
-            console.warn('Rankings refreshed from API')
             setRefreshing(false)
         } else if (getHoursDiff(latestRankings?.metaData?.validFrom) <= refreshThreshold) {
             setLatestRankings(localRankings)
@@ -85,6 +85,7 @@ export default function NewsScreen() {
         <Stack.Navigator>
             <Stack.Screen name="Landing" component={RankingsLanding} options={{headerShown: false}}/>
             <Stack.Screen name="Rankings" component={FullRankingsScreen} options={{headerBackTitle: "Back"}}/>
+            <Stack.Screen name="Player" component={PlayerScreen} options={{headerBackTitle: "Back"}}/>
         </Stack.Navigator>
     );
 }

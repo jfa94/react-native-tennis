@@ -6,7 +6,7 @@ import {SUPPORTED_RANKINGS} from "../shared/constants";
 async function callRankingsApi() {
     try {
         // TODO: Update to custom API
-        let response = await fetch('https://run.mocky.io/v3/d39b1ff4-74d0-4c2a-b319-091ea070f448')
+        let response = await fetch('https://run.mocky.io/v3/23b9e52d-175e-4ad3-8476-4c5686a7c8b5')
         let jsonResponse = await response.json()
         SUPPORTED_RANKINGS.forEach((category) => {
             jsonResponse[category] = jsonResponse[category].sort(

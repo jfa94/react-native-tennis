@@ -13,6 +13,7 @@ function FullRankingsScreen({navigation, route}) {
     let [orderBy, setOrderBy] = useState('OFFICIAL')
 
     const category = route.params.category
+    const orderKey = `${orderBy.toLowerCase()}Ranking`
 
     let pageTitle
     switch (category) {
@@ -30,14 +31,15 @@ function FullRankingsScreen({navigation, route}) {
             break;
     }
 
+    const handleOrderBy = () => {
+        setOrderBy(prevState => prevState === 'OFFICIAL' ? 'RACE' : 'OFFICIAL')
+    }
+
     const headerRightButton = () => {
         return (
-            <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
-                <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row', borderWidth: 2, borderRadius: 5, padding: 3}}>
-                    <Text style={{fontSize: 11, lineHeight: 15, fontWeight: 'bold'}}>{orderBy}</Text><Ionicons name={'md-arrow-dropdown'} />
-                </TouchableOpacity>
-                <TouchableOpacity style={{justifyContent: 'center', alignItems: 'center', width: 38}}>
-                    <Ionicons name={'md-search'} size={28}/>
+            <View style={styles.headerRightButtonContainer}>
+                <TouchableOpacity style={styles.orderByHeader} onPress={handleOrderBy}>
+                    <Text style={styles.orderByHeaderText}>{orderBy}</Text><Ionicons name={'md-arrow-dropdown'}/>
                 </TouchableOpacity>
             </View>
         )
@@ -45,25 +47,31 @@ function FullRankingsScreen({navigation, route}) {
 
     useEffect(() => {
         (async () => {
-            await navigation.setOptions({
-                title: pageTitle,
-                headerRight: headerRightButton
-            })
             let localRankings = await readRankings()
-            setLatestRankings(localRankings)
+            setLatestRankings(localRankings[category])
             setRefreshing(false)
         })()
     }, [])
 
+    useEffect(() => {
+        (async () => {
+            await navigation.setOptions({
+                title: pageTitle,
+                headerRight: headerRightButton,
+                headerRightContainerStyle: {paddingHorizontal: 10}
+            })
+        })()
+    }, [headerRightButton])
+
     return (
         refreshing ?
-            <ScreenLoadingIndicator /> :
+            <ScreenLoadingIndicator/> :
             <View style={styles.rankingsContainer}>
                 <FlatList
-                    data={latestRankings[category]}
+                    data={latestRankings.sort((a, b) => parseFloat(a[orderKey]) - parseFloat(b[orderKey]))}
                     keyExtractor={(player) => player.playerId}
                     renderItem={({index, item}) => {
-                        return <PlayerRow index={index} {...item} />
+                        return <PlayerRow index={index} {...item} orderKey={orderKey} navigation={navigation}/>
                     }}
                 />
             </View>
@@ -73,6 +81,24 @@ function FullRankingsScreen({navigation, route}) {
 const styles = StyleSheet.create({
     rankingsContainer: {
         flex: 1
+    },
+    headerRightButtonContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    orderByHeader: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        borderWidth: 2,
+        borderRadius: 5,
+        padding: 3
+    },
+    orderByHeaderText: {
+        fontSize: 11,
+        lineHeight: 15,
+        fontWeight: 'bold'
     }
 });
 
